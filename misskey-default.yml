@@ -6,7 +6,7 @@
 #───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
-url: # Fill
+url: https://test.inokashiraskey.jp/ # Fill
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
@@ -121,13 +121,13 @@ redis:
 # You can set scope to local (default value) or global 
 # (include notes from remote).
 
-#meilisearch:
-#  host: localhost
-#  port: 7700
-#  apiKey: ''
-#  ssl: true
-#  index: ''
-#  scope: local
+meilisearch:
+  host: meilisearch
+  port: 7700
+  apiKey: 'testKochiku'
+  ssl: false
+  index: 'inokashiraskey-jp'
+  scope: 'global'
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -225,3 +225,5 @@ signToActivityPubGet: true
 
 # PID File of master process
 #pidFile: /tmp/misskey.pid
+
+misskeyBlockMentionsFromUnfamiliarRemoteUsers: true

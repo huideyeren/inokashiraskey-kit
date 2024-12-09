@@ -14,15 +14,15 @@ docker container prune -f
 docker image prune -f
 
 if [[ "$TAG" == "latest" ]]; then
-    docker pull misskey/misskey:latest
+    docker pull ghcr.io/huideyeren/misskey:latest
 elif [[ "$TAG" =~ / ]]; then
     # PATH/IMAGE:TAG format
     docker pull "$TAG"
-    docker tag "$TAG" misskey/misskey:latest
+    docker tag "$TAG" ghcr.io/huideyeren/misskey:latest
 else
     # TAG format
-    docker pull misskey/misskey:"$TAG"
-    docker tag misskey/misskey:"$TAG" misskey/misskey:latest
+    docker pull ghcr.io/huideyeren/misskey:"$TAG"
+    docker tag ghcr.io/huideyeren/misskey:"$TAG" ghcr.io/huideyeren/misskey:latest
 fi
 
 OLD_CONTAINER="$(docker compose ps web | tail -n1 | awk '{print $1}')"

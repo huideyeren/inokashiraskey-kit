@@ -1,4 +1,4 @@
-# misskey-kit
+# misskey-kit Inokashiraskey版
 misskeyサーバーを簡単に立てるためのdocker compose定義  
 Cloudflareを使うので固定IPアドレスは不要、それどころかグローバルIPアドレスさえ不要です。
 
