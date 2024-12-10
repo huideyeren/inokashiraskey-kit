@@ -114,37 +114,6 @@ services:
       - internal_network
     volumes:
       - ./meili_data:/meili_data
-  
-  uptime_kuma:
-    image: louislam/uptime-kuma:latest
-    volumes:
-      - ./data:/app/data
-    ports:
-      # <Host Port>:<Container Port>
-      - 3001:3001
-    restart: unless-stopped
-    networks:
-      - internal_network
-      - external_network
-    environment:
-      - VIRTUAL_HOST=test-kuma.inokashiraskey.jp
-
-  dockge:
-    image: louislam/dockge:1
-    container_name: dockge
-    restart: unless-stopped
-    networks:
-      - internal_network
-      - external_network
-    ports:
-      - 5001:5001
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data:/app/data
-      - /var/stacks:/var/stacks
-    environment:
-      - DOCKGE_STACKS_DIR=/var/stacks
-      - VIRTUAL_HOST=test-dockge.inokashiraskey.jp
 
   wasabi-proxy:
     restart: always
