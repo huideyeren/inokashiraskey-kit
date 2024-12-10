@@ -83,7 +83,7 @@ services:
     ports:
       - 7493:7493
     env_file:
-      - .config/docker.env
+      - ./docker.env
     environment:
       PORT: 7493
       MCAPTCHA_redis_URL: "redis://mcaptcha_redis/"
@@ -109,7 +109,7 @@ services:
       - MEILI_NO_ANALYTICS=true
       - MEILI_ENV=production
     env_file:
-      - .config/meilisearch.env
+      - ./meilisearch.env
     networks:
       - internal_network
     volumes:
