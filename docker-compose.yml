@@ -22,7 +22,7 @@ services:
   #     - internal_network
 
   web:
-    image: ghcr.io/huideyeren/misskey:latest
+    image: huideyeren/misskey:latest
     restart: always
     links:
       - db
@@ -43,6 +43,11 @@ services:
     # environment:
       #- VIRTUAL_HOST=~^.*$$  # marker for lb
       #- VIRTUAL_PORT=3000  # target port for lb
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   redis:
     restart: always
@@ -55,6 +60,11 @@ services:
       test: "redis-cli ping"
       interval: 5s
       retries: 20
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   db:
     restart: always
@@ -70,6 +80,11 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   mcaptcha:
     restart: always
@@ -90,6 +105,11 @@ services:
         condition: service_healthy
       mcaptcha_redis:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   mcaptcha_redis:
     image: mcaptcha/cache:latest
@@ -99,6 +119,11 @@ services:
       test: "redis-cli ping"
       interval: 5s
       retries: 20
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
   meilisearch:
     restart: always
@@ -112,6 +137,11 @@ services:
       - internal_network
     volumes:
       - meili_data:/meili_data
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
 
 volumes:
   db-data:
