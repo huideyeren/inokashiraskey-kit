@@ -1,25 +1,25 @@
 services:
 
-  # Cloudflare Tunnel
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    restart: always
-    command: tunnel --no-autoupdate run
-    env_file:
-      - docker.env
-    networks:
-      - internal_network
-      - external_network
+  # # Cloudflare Tunnel
+  # tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: always
+  #   command: tunnel --no-autoupdate run
+  #   env_file:
+  #     - docker.env
+  #   networks:
+  #     - internal_network
+  #     - external_network
 
-  # A load balancer to enable non-disruptive replacement of web containers
-  lb:
-    image: nginxproxy/nginx-proxy:latest
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx-custom.conf:/etc/nginx/conf.d/nginx-custom.conf:ro
-    networks:
-      - internal_network
+  # # A load balancer to enable non-disruptive replacement of web containers
+  # lb:
+  #   image: nginxproxy/nginx-proxy:latest
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/tmp/docker.sock:ro
+  #     - ./nginx-custom.conf:/etc/nginx/conf.d/nginx-custom.conf:ro
+  #   networks:
+  #     - internal_network
 
   web:
     image: ghcr.io/huideyeren/misskey:latest
@@ -34,14 +34,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    #ports: ["3000:3000"]  # enable this if you want to access directly
+    ports: ["3000:3000"]  # enable this if you want to access directly
     networks:
       - internal_network
       - external_network
     volumes:
       - ./misskey-default.yml:/misskey/.config/default.yml:ro
-    environment:
-      - VIRTUAL_HOST=test.inokashiraskey.jp
+    # environment:
       #- VIRTUAL_HOST=~^.*$$  # marker for lb
       #- VIRTUAL_PORT=3000  # target port for lb
 
@@ -51,7 +50,7 @@ services:
     networks:
       - internal_network
     volumes:
-      - /var/misskey/redis-data:/data
+      - redis-data:/data
     healthcheck:
       test: "redis-cli ping"
       interval: 5s
@@ -59,14 +58,14 @@ services:
 
   db:
     restart: always
-    image: postgres:15-alpine
+    image: postgres:16
     networks:
       - internal_network
     env_file:
       - docker.env
     volumes:
       - ./pg-init.sql:/docker-entrypoint-initdb.d/pg-init.sql:ro
-      - /var/misskey/db:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -83,10 +82,9 @@ services:
     ports:
       - 7493:7493
     env_file:
-      - ./docker.env
+      - ./mcaptcha.env
     environment:
       PORT: 7493
-      MCAPTCHA_redis_URL: "redis://mcaptcha_redis/"
     depends_on:
       db:
         condition: service_healthy
@@ -113,20 +111,13 @@ services:
     networks:
       - internal_network
     volumes:
-      - ./meili_data:/meili_data
+      - meili_data:/meili_data
 
-  wasabi-proxy:
-    restart: always
-    image: nginx
-    volumes:
-      - ./wasabi.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    networks:
-      - internal_network
-      - external_network
-    environment:
-      - VIRTUAL_HOST=test-storage.inokashiraskey.jp
+volumes:
+  db-data:
+  redis-data:
+  meili_data:
+  mcaptcha-data:
 
 networks:
   internal_network:
